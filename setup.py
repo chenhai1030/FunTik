@@ -7,9 +7,17 @@ Usage:
 
 from setuptools import setup
 
-APP = ['mac_tray.py']
-DATA_FILES = ['web_ui/favicon.ico']
-OPTIONS = {'iconfile': 'app.icns'}
+APP = ['FunTik.py']
+DATA_FILES = [
+        'Resources/favicon.png',
+        ]
+OPTIONS = {
+        'argv_emulation': True,
+        'iconfile': 'app.icns',
+        'packages': [
+            'AppKit',
+            ],
+}
 
 setup(
     app=APP,

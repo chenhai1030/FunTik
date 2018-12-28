@@ -43,14 +43,30 @@ class MacTrayObject(AppKit.NSObject):
         self.registerObserver()
 
     def setupMenuBar(self):
-        self.statusbar = NSStatusBar.systemStatusBar()
-        self.statusitem = self.statusbar.statusItemWithLength_(AppKit.NSSquareStatusItemLength)
+        self.statusitem = NSStatusBar.systemStatusBar().statusItemWithLength_(-1)
+        self.statusitem.setHighlightMode_(True)
 
         # Set initial image icon
-        icon_path = os.path.join(current_path, "web_ui", "favicon.ico")
-        image = NSImage.alloc().initByReferencingFile_(icon_path.encode('utf-8').decode('utf-8'))
+        icon_path = os.path.join(current_path, "Resources", "favicon.png")
+        try:
+            print('attempting to open image at {0}'.format(icon_path))
+            with open(icon_path):
+                pass
+        except IOError:  # literal file path didn't work -- try to locate image based on main script path
+            try:
+                from __main__ import __file__ as main_script_path
+                main_script_path = os.path.dirname(main_script_path)
+                icon_path = os.path.join(main_script_path, icon_path)
+            except ImportError:
+                pass
+            print('attempting (again) to open image at {0}'.format(icon_path))
+            with open(icon_path):  # file doesn't exist
+                pass  # otherwise silently errors in NSImage which isn't helpful for debugging
+        #image = NSImage.alloc().initByReferencingFile_(icon_path.encode('utf-8').decode('utf-8'))
+        image = NSImage.alloc().initByReferencingFile_(icon_path)
         image.setScalesWhenResized_(True)
         image.setSize_((20, 20))
+        #image.setTemplate_(True)
         self.statusitem.setImage_(image)
 
         # Let it highlight upon clicking
@@ -130,10 +146,10 @@ class MacTrayObject(AppKit.NSObject):
             self.menu.insertItem_atIndex_(menuitem, 3)
         elif not self.polling_flag:
             print('reflash time')
-            #add 180s = 3m = 0.05
-            today_hours = self.today_hours + 0.05
+            #add 180s = 3m = 0.05h
+            self.today_hours = round(self.today_hours + 0.05, 2)
             self.menu.removeItemAtIndex_(3)
-            menu_item = 'Today :' + str(today_hours) + 'h'
+            menu_item = 'Today :' + str(self.today_hours) + 'h'
             menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(menu_item, '', '')
             self.menu.insertItem_atIndex_(menuitem, 3)
 

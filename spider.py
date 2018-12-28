@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 #coding:utf-8
 
-import sys
-import argparse
+# import sys
+# import argparse
 import requests
 import json
 import re
 import time
 import datetime
 
-from pyecharts import Bar,Page
+#from pyecharts import Bar, Page
 
 localtime = time.strftime('%Y-%m-%d', time.localtime(time.time()))
 # description = '''usage:
@@ -144,37 +144,37 @@ def parse_data(data_list):
     return day_list, hour_list
 
 
-def create_chart(day_list, hour_list):
-    page = Page()
-
-    days = time.mktime(time.strptime(day_list[-1], '%Y-%m-%d')) - time.mktime(time.strptime(day_list[0], '%Y-%m-%d'))
-    weeks = int(days/3600/24/7)+1
-    for i in range(0, weeks):
-        week_day = datetime.datetime.strptime(day_list[i*7], '%Y-%m-%d').strftime("%w")
-        week = datetime.datetime.strptime(day_list[i*7], '%Y-%m-%d').strftime("%W")
-        bar = Bar()
-        for j in range(0, 7):
-            if j < int(week_day):
-                day_list.insert(i*7, '0')
-                hour_list.insert(i*7, '0')
-            elif j == int(week_day):
-                pass
-            else:
-                if len(day_list) > i*7+j and week != datetime.datetime.strptime(day_list[i*7+j], '%Y-%m-%d').strftime("%W"):
-                    day_list.insert(i*7+j, '0')
-                    hour_list.insert(i*7+j, '0')
-
-        if len(day_list) > 7*(i+1)-1:
-            x_axis = day_list[i*7 : 7*(i+1)-1]
-            y_axis = hour_list[i*7 : 7*(i+1)-1]
-        else:
-            x_axis = day_list[i*7:]
-            y_axis = hour_list[i*7:]
-
-        bar.add(str(week) + "周", x_axis, y_axis)
-        page.add_chart(bar)
-
-    page.render()
+# def create_chart(day_list, hour_list):
+#     page = Page()
+#
+#     days = time.mktime(time.strptime(day_list[-1], '%Y-%m-%d')) - time.mktime(time.strptime(day_list[0], '%Y-%m-%d'))
+#     weeks = int(days/3600/24/7)+1
+#     for i in range(0, weeks):
+#         week_day = datetime.datetime.strptime(day_list[i*7], '%Y-%m-%d').strftime("%w")
+#         week = datetime.datetime.strptime(day_list[i*7], '%Y-%m-%d').strftime("%W")
+#         bar = Bar()
+#         for j in range(0, 7):
+#             if j < int(week_day):
+#                 day_list.insert(i*7, '0')
+#                 hour_list.insert(i*7, '0')
+#             elif j == int(week_day):
+#                 pass
+#             else:
+#                 if len(day_list) > i*7+j and week != datetime.datetime.strptime(day_list[i*7+j], '%Y-%m-%d').strftime("%W"):
+#                     day_list.insert(i*7+j, '0')
+#                     hour_list.insert(i*7+j, '0')
+#
+#         if len(day_list) > 7*(i+1)-1:
+#             x_axis = day_list[i*7 : 7*(i+1)-1]
+#             y_axis = hour_list[i*7 : 7*(i+1)-1]
+#         else:
+#             x_axis = day_list[i*7:]
+#             y_axis = hour_list[i*7:]
+#
+#         bar.add(str(week) + "周", x_axis, y_axis)
+#         page.add_chart(bar)
+#
+#     page.render()
 
 # def main(argv):
 #
