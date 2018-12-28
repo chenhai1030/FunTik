@@ -7,7 +7,7 @@ Usage:
 
 from setuptools import setup
 
-APP = ['FunTik.py']
+APP = ['funtik/FunTik.py']
 DATA_FILES = [
         'Resources/favicon.png',
         ]
@@ -22,6 +22,23 @@ OPTIONS = {
 setup(
     app=APP,
     data_files=DATA_FILES,
+    description='A little statusbar for to allow switching into an airplane mode under OS X written in Python.',
+    license='MIT',
+    author='ChenHai',
+    author_email='chenhai@fun.tv',
+    url='https://github.com/chenhai1030/FunTik',
+    packages=['funtik'],
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: MacOS X',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Operating System :: MacOS :: MacOS X',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+    ]
 )

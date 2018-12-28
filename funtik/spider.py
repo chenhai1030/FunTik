@@ -95,7 +95,7 @@ class Attendance:
             start_time = datetime.datetime.now() - datetime.timedelta(days=int(week_day))
             day_list, hour_list = self.get_card_detail(str(start_time).split(" ")[0], localtime)
 
-        return sum(hour_list)
+        return round(sum(hour_list), 2)
 
 
 def calc_average_hours():

@@ -6,6 +6,18 @@ import sys
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 
+def debug_mode(choice):
+    """Enable/disable printing helpful information for debugging the program. Default is off."""
+    global _log
+    if choice:
+        def _log(*args):
+            AppKit.NSLog(' '.join(map(str, args)))
+    else:
+        def _log(*_):
+            pass
+debug_mode(True)
+
+
 if __name__ == "__main__":
     if sys.version_info.major == 3 and sys.version_info.minor == 7:
         python_path = os.path.abspath(os.path.join(current_path, os.pardir, 'python37', '1.0'))
@@ -39,6 +51,10 @@ class MacTrayObject(AppKit.NSObject):
         self.polling_flag = True
         self.today_hours = 0
 
+        # app_support_path = os.path.join(AppKit.NSSearchPathForDirectoriesInDomains(14, 1, 1).objectAtIndex_(0), 'FunTik')
+        # if not os.path.isdir(app_support_path):
+        #     os.mkdir(app_support_path)
+
         self.setupMenuBar()
         self.registerObserver()
 
@@ -47,9 +63,10 @@ class MacTrayObject(AppKit.NSObject):
         self.statusitem.setHighlightMode_(True)
 
         # Set initial image icon
-        icon_path = os.path.join(current_path, "Resources", "favicon.png")
+        #icon_path = os.path.join(current_path, "Resources", "favicon.png")
+        icon_path = 'favicon.png'
         try:
-            print('attempting to open image at {0}'.format(icon_path))
+            _log('attempting to open image at {0}'.format(icon_path))
             with open(icon_path):
                 pass
         except IOError:  # literal file path didn't work -- try to locate image based on main script path
@@ -59,7 +76,7 @@ class MacTrayObject(AppKit.NSObject):
                 icon_path = os.path.join(main_script_path, icon_path)
             except ImportError:
                 pass
-            print('attempting (again) to open image at {0}'.format(icon_path))
+            _log('attempting (again) to open image at {0}'.format(icon_path))
             with open(icon_path):  # file doesn't exist
                 pass  # otherwise silently errors in NSImage which isn't helpful for debugging
         #image = NSImage.alloc().initByReferencingFile_(icon_path.encode('utf-8').decode('utf-8'))
@@ -186,6 +203,24 @@ class MacTrayObject(AppKit.NSObject):
     def windowWillClose_(self, notification):
         os._exit(0)
         NSApp.terminate_(self)
+
+
+class App(object):
+    """
+    Represents the statusbar application.
+    """
+    def __init__(self, name, title=None, icon=None, template=None, menu=None, quit_button='Quit'):
+        _require_string(name)
+        self._name = name
+        self._icon = self._icon_nsimage = self._title = None
+        self._template = template
+        self.icon = icon
+        self.title = title
+        self.quit_button = quit_button
+        #self._menu = Menu()
+        if menu is not None:
+            self.menu = menu
+        #self._application_support = application_support(self._name)
 
 
 class ButtonFactory(object):
